@@ -9,7 +9,7 @@ const botTypeClasses = {
   Captain: "icon star"
 };
 
-const BotSpecs = props => {
+const BotStats = props => {
   return (
     <div >
       <div >
@@ -73,4 +73,4 @@ const BotSpecs = props => {
   );
 };
 
-export default BotSpecs;
+export default BotStats;
