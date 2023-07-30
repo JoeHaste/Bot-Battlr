@@ -9,9 +9,8 @@ const botTypeClasses = {
 };
 const BotCard = props => {
   return (
-    <div className="ui column">
+    <div>
       <div
-        className="ui card"
         key={props.bot.id}
         id={props.bot.id}
         onClick={(e) => props.addOrRemoveBot(e)}
@@ -19,39 +18,33 @@ const BotCard = props => {
         <div className="image">
           <img alt="oh no!" src={props.bot.avatar_url} />
         </div>
-        <div className="content">
-          <div className="header">
+        <div >
+        <div >
             {props.bot.name}
             <i className={botTypeClasses[props.bot.bot_class]} />
-          </div>
-          <div className="meta text-wrap">
-            <small>{props.bot.catchphrase}</small>
+        </div>
+        <div>
+            {props.bot.catchphrase}
           </div>
         </div>
-        <div className="extra content">
-          <span>
-            <i className="icon heartbeat" />
-            {props.bot.health}
-          </span>
-          <span>
-            <i className="icon lightning" />
-            {props.bot.damage}
-          </span>
-          <span>
-            <i className="icon shield" />
-            {props.bot.armor}
-          </span>
-          <span>
-            <div className="ui center aligned segment basic">
+        <div>
+          <li>
+           Health: {props.bot.health}
+          </li>
+          <li>
+           Damage: {props.bot.damage}
+          </li>
+          <li>
+           Armor: {props.bot.armor}
+          </li>
+            <div>
               <button
-                className="ui mini red button"
                 id={props.bot.id}
                 onClick={(e) => props.removeBotFromAll(e)}
               >
                 x
               </button>
             </div>
-          </span>
         </div>
       </div>
     </div>

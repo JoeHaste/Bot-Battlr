@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import BotCard from "./BotCard";
+import BotCard from './BotCard';
 
 class BotCollection extends Component {
 
@@ -11,9 +11,9 @@ class BotCollection extends Component {
 
   render() {
     return (
-      <div className="ui four column grid">
-        <div className="row">
-          Collection of all bots
+      <div>
+        <div>
+          Bots
           <br />
           {this.renderBotCards(this.props.botsCollection)}  
         </div>
