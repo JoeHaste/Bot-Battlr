@@ -1,26 +1,26 @@
-import React, { Component } from "react";
-import BotCard from './BotCard';
+import React from "react";
+import BotCard from "./BotCard";
 
-class YourBotArmy extends Component {
-  renderBotArmy = botArmyCollection => {
-
-    return(
-      botArmyCollection.map((bot, index) => <BotCard key={index} bot={bot} addOrRemoveBot={this.props.removeBotFromArmy} removeBotFromAll={this.props.removeBotFromAll} />)
-    )
+class YourBotArmy extends React.Component {
+	renderBots = () => {
+		return this.props.bots.map(bot => {
+			return <BotCard key={bot.id} bot={bot} addBot={this.props.addBot}/>
+		})
   }
-
-  render() {
+  
+  render(){
     return (
-      <div>
-        <div >
-          <div >
+      <div  id="mybotarmy">
+        <div>
+          <div>
+            {this.renderBots()}
             Your Bot Army
-            <br />
-            {this.renderBotArmy(this.props.botArmyCollection)}
           </div>
         </div>
       </div>
     );
   }
-}
+  
+};
+
 export default YourBotArmy;

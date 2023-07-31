@@ -1,53 +1,58 @@
 import React from "react";
-const botTypeClasses = {
-  Assault: "icon military",
-  Defender: "icon shield",
-  Support: "icon plus circle",
-  Medic: "icon ambulance",
-  Witch: "icon magic",
-  Captain: "icon star"
-};
+
 const BotCard = props => {
+  const { bot } = props;
+
+  let botType;
+
+  switch (bot.bot_class) {
+    case "Assault":
+      botType = <i />;
+      break;
+    case "Defender":
+      botType = <i/>;
+      break;
+    case "Support":
+      botType = <i/>;
+      break;
+    default:
+      botType = <div />;
+  }
+
   return (
     <div>
       <div
-        key={props.bot.id}
-        id={props.bot.id}
-        onClick={(e) => props.addOrRemoveBot(e)}
+        key={bot.id}
+        onClick={() => props.addBot(bot)}
       >
         <div className="image">
-          <img alt="oh no!" src={props.bot.avatar_url} />
+          <img alt="oh no!" src={bot.avatar_url} />
         </div>
-        <div >
-        <div >
-            {props.bot.name}
-            <i className={botTypeClasses[props.bot.bot_class]} />
-        </div>
-        <div>
-            {props.bot.catchphrase}
+        <div className="Content">
+          <div >
+            name: {bot.name} {botType}
+          </div>
+
+          <div >
+           catchphrase:  <small>{bot.catchphrase}</small>
           </div>
         </div>
-        <div>
+        <div className="extracontent">
           <li>
-           Health: {props.bot.health}
+            health:  {bot.health}
+          </li>
+
+          <li>
+           damage: {bot.damage}
           </li>
           <li>
-           Damage: {props.bot.damage}
+          armor:  {bot.armor}
           </li>
-          <li>
-           Armor: {props.bot.armor}
-          </li>
-            <div>
-              <button
-                id={props.bot.id}
-                onClick={(e) => props.removeBotFromAll(e)}
-              >
-                x
-              </button>
-            </div>
         </div>
       </div>
     </div>
   );
+
 };
+
 export default BotCard;

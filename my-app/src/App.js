@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import BotsPage from "./Components/BotsPage";
 
+
 class App extends Component {
   render() {
     return (
@@ -12,3 +13,4 @@ class App extends Component {
 }
 
 export default App;
+

@@ -1,122 +1,130 @@
-import React, { Component } from "react";
-import BotCollection from './BotCollection';
-import YourBotArmy from './YourBotArmy';
+import React from "react";
+import BotsCollection from '../Components/BotCollection'
+import YourBotArmy from '../Components/YourBotArmy'
+import BotSpecs from '../Components/BotSpecs'
+import BotSearch from '../Components/BotSearch'
+import Filter from '../Components/Filter'
 
-class BotsPage extends Component {
-
-  state = {
-    botsCollection: [],
-    botArmyCollection: []
+class BotsPage extends React.Component {
+  constructor(){
+    super()
+    this.state = {
+      allBots: [],
+      selectBot: undefined,
+      query: '',
+      filter: 'All'
+    }
   }
 
-  componentDidMount() {
-
+  componentDidMount(){
     fetch("http://localhost:3000/bots")
     .then(res => res.json())
-    .then(data => {
-      return(
-        data.map((bot) => {
-          this.setState({
-            botsCollection: [...this.state.botsCollection, bot],
-            botArmyCollection: [...this.state.botArmyCollection]
-          })
-        })
+    .then(bots => this.setBots(bots))
+      .then(bots => this.setState({
+        allBots: bots
+      }))
+  }
+
+  setBots = (bots) => {
+    return bots.map(bot => {
+      bot.owned = false
+      return bot
+    })
+  }
+
+  clickBot = (bot) => {
+    this.setState({
+      selectBot: bot
+    })
+  }
+
+  addBot = (selectBot) => {
+    let x = this.state.allBots.map(bot => {
+      if(bot.id === selectBot.id){
+        bot.owned = !bot.owned
+        return bot
+      }else {
+        return bot
+      }
+    })
+    this.setState({
+      allBots: x
+    })
+  }
+
+  filterFreeBots = () => {
+    let freeBots = []
+    this.state.allBots.map(bot => {
+      if(bot.owned === false){
+        freeBots.push(bot)
+      }
+    })
+    if(this.state.filter !== 'All'){
+      freeBots = freeBots.filter(bot => 
+        bot.bot_class == this.state.filter
       )
+    }
+    if(this.state.query){
+      freeBots = freeBots.filter(bot=> 
+        bot.name.toLowerCase().includes(this.state.query.toLowerCase())
+      )
+    }
+    return freeBots
+  }
+
+  filterOwnedBots = () => {
+    let ownedBots = []
+    this.state.allBots.map(bot => {
+      if(bot.owned === true){
+        ownedBots.push(bot)
+      }
+    })
+    let filtered = ownedBots.filter(bot=> {
+      return bot.name.toLowerCase().includes(this.state.query.toLowerCase())
+    })
+    return filtered
+  }
+
+  handleClear = () => {
+    this.setState({
+      query: ''
     })
   }
 
-  addBotToArmy = (event) => {
-
-    const botNotFound = !this.state.botArmyCollection.find(e => e.id === parseInt(event.currentTarget.id))
-    const botArmyAddition = this.state.botsCollection.find(e => e.id === parseInt(event.currentTarget.id))
-
-    if (botNotFound) {
-      this.setState({
-        botsCollection: [...this.state.botsCollection],
-        botArmyCollection: [...this.state.botArmyCollection, botArmyAddition]
-      })
-    }
-  }
-
-  removeBotFromArmy = (event) => {
-
-    const botIdsMatch = (element) => {
-      return element.id === parseInt(event.currentTarget.id)
-    }
-
-    const botIndex = this.state.botArmyCollection.findIndex(botIdsMatch)
-
-    if (botIndex !== -1) {
-      this.setState({
-        botsCollection: [...this.state.botsCollection],
-        botArmyCollection: [...this.state.botArmyCollection.slice(0, botIndex), ...this.state.botArmyCollection.slice(botIndex + 1)]
-      })
-    }
-  }
-
-  removeBotFromBotsCollection = (event) => {
-
-    const botIdsMatch = (element) => {
-      return element.id === parseInt(event.currentTarget.id)
-    }
-
-    const botIndex = this.state.botsCollection.findIndex(botIdsMatch)
-
-    if (botIndex !== -1) {
-      this.setState({
-        botsCollection: [...this.state.botsCollection.slice(0, botIndex), ...this.state.botsCollection.slice(botIndex + 1)],
-        botArmyCollection: [...this.state.botArmyCollection]
-      })
-    }
-  }
-
-  removeBotFromAll = (event) => {
-    event.stopPropagation()
-
-    const botIdsMatch = (element) => {
-      return element.id === parseInt(event.currentTarget.id)
-    }
-
-    const botArmyIndex = this.state.botArmyCollection.findIndex(botIdsMatch)
-    const botsCollectionIndex = this.state.botsCollection.findIndex(botIdsMatch)
-
-    if (botArmyIndex !== -1) {
-      this.setState({
-        botsCollection: [...this.state.botsCollection.slice(0, botsCollectionIndex), ...this.state.botsCollection.slice(botsCollectionIndex + 1)],
-        botArmyCollection: [...this.state.botArmyCollection.slice(0, botArmyIndex), ...this.state.botArmyCollection.slice(botArmyIndex + 1)]
-      })
-    } else {
-      this.setState({
-        botsCollection: [...this.state.botsCollection.slice(0, botsCollectionIndex), ...this.state.botsCollection.slice(botsCollectionIndex + 1)],
-        botArmyCollection: [...this.state.botArmyCollection]
-      })
-    }
-
-    fetch(`http://localhost:3000/bots/${event.currentTarget.id}`, 
-    { 
-      method: 'DELETE', 
-      headers: { 'Content-Type': 'application/json' },
-      body: null
+  handleChange = (query) => {
+    this.setState({
+      query: query
     })
   }
 
+  clearSpec = () => {
+    this.setState({
+      selectBot: undefined
+    })
+  }
+
+  filterChange = (value) => {
+    this.setState({
+      filter: value
+    })
+  }
+
+  
   render() {
-    return(
+    console.log(this.state)
+    return (
       <div>
-        <BotCollection 
-          botsCollection={this.state.botsCollection} 
-          addBotToArmy={this.addBotToArmy.bind(this)} 
-          removeBotFromAll={this.removeBotFromAll.bind(this)} 
-        />
-
-        <YourBotArmy 
-          botArmyCollection={this.state.botArmyCollection} 
-          removeBotFromArmy={this.removeBotFromArmy.bind(this)} 
-          removeBotFromAll={this.removeBotFromAll.bind(this)} 
-        />
+        <BotSearch handleClear={this.handleClear} handleChange={this.handleChange}/>
+        <br></br>
+        <Filter filterChange={this.filterChange}/>
+        <YourBotArmy bots={this.filterOwnedBots()} addBot={this.clickBot}/>
+        <br></br>
+        {this.state.selectBot ? <BotSpecs bot={this.state.selectBot} clearSpec={this.clearSpec} addBot={this.addBot} />: 
+          <BotsCollection bots={this.filterFreeBots()} addBot={this.clickBot}/>}
       </div>
-    )
+    );
   }
+
 }
 
-export default BotsPage
+export default BotsPage;
